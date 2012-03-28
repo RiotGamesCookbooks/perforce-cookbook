@@ -11,7 +11,7 @@
 default[:p4][:owner]          = nil
 default[:p4][:group]          = nil
 
-default[:p4][:port]           = nil # environment attribute
+default[:p4][:port]           = nil
 
 default[:p4][:user]           = default[:p4][:owner]
 default[:p4][:passwd]         = nil
