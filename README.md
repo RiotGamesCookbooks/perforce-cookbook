@@ -1,7 +1,7 @@
 Description
 ===========
 
-Install perforce with a config file sourced in .bash_profile
+Install perforce with a config file sourced in the user's shell profile.
 
 Requirements
 ============
