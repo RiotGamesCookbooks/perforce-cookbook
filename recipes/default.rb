@@ -23,7 +23,7 @@ shellrc_path = File.join home_dir_path, case user_data[:shell]
                                           '.zshrc'
                                         end
 
-set_p4config_line = "p4 set P4CONFIG=#{p4config_path}"
+set_p4config_line = "p4 set P4CONFIG=\"#{p4config_path}\""
 
 template p4config_path do
   owner     node[:owner]
@@ -31,18 +31,26 @@ template p4config_path do
   variables p4
 end
 
-# set perforce config
-
 ruby_block 'set P4CONFIG in shell rc file' do
   block do
-    File.open(shellrc_path, 'a+') do |file|
-      file.puts set_p4config_line
+    content = nil
+    File.open(shellrc_path, 'r') do |file|
+      content = file.read
+
+      p4config_matcher = 'P4CONFIG=\"[^\"]*\"'
+      content.gsub! /^.*#{p4config_matcher}.*$/, set_p4config_line
+
+      content << "\n\n#{set_p4config_line}" unless content =~ /#{p4config_matcher}/
     end
+
+    File.open(shellrc_path, 'w') do |f|
+      f.print(content)
+    end
+
   end
 
   not_if do
     begin
-      # TODO detect shell
       File.open(shellrc_path) do |file|
         !!(file.readlines.join("\n") =~ /#{set_p4config_line}/)
       end
