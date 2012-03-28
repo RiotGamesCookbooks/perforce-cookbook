@@ -8,8 +8,10 @@
 # All rights reserved - Do Not Redistribute
 #
 
-default[:p4][:owner]          = nil
+default[:p4][:owner]          = node[:current_user]
 default[:p4][:group]          = nil
+
+default[:p4][:config_filename] = '.p4config'
 
 default[:p4][:port]           = nil
 
@@ -26,3 +28,4 @@ default[:p4][:charset]        = 'utf8'
 default[:p4][:commandcharset] = nil
 default[:p4][:language]       = nil 
 default[:p4][:host]           = nil
+

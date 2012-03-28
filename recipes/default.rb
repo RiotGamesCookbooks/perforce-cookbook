@@ -8,33 +8,43 @@
 #
 # All rights reserved - Do Not Redistribute
 #
-
 include_recipe 'homebrew'
 
 package 'perforce'
 
-home_path = File.join("/Users", node[:owner])
-p4config_path = File.join(home_path, '.p4config')
+p4 = node[:p4]
+user_data = node[:etc][:passwd][p4[:owner]]
+home_dir_path = user_data[:dir]
+p4config_path = File.join home_dir_path, p4[:config_filename]
+shellrc_path = File.join home_dir_path, case user_data[:shell]
+                                        when '/bin/bash'
+                                          '.bash_profile'
+                                        when '/bin/zsh'
+                                          '.zshrc'
+                                        end
+
+set_p4config_line = "p4 set P4CONFIG=#{p4config_path}"
 
 template p4config_path do
   owner     node[:owner]
   group     node[:group]
-  variables node[:p4]
+  variables p4
 end
 
-source_p4config_line = "source ~/.p4config"
+# set perforce config
 
-ruby_block 'source .p4config in .bash_profile' do
+ruby_block 'set P4CONFIG in shell rc file' do
   block do
-    File.open(File.join(home_path, '.bash_profile'), 'a') do |file|
-      file.puts source_p4config_line
+    File.open(shellrc_path, 'a+') do |file|
+      file.puts set_p4config_line
     end
   end
 
   not_if do
     begin
-      File.open(File.join(home_path, '.bash_profile'), 'r') do |file|
-        !!(file.readlines.join(' ') =~ /#{source_p4config_line}/)
+      # TODO detect shell
+      File.open(shellrc_path) do |file|
+        !!(file.readlines.join("\n") =~ /#{set_p4config_line}/)
       end
     rescue Errno::ENOENT
       false
