@@ -14,13 +14,21 @@ def load_current_resource
 end
 
 action :install do
-  unless ::File.exists?(::File.join(@current_resource.directory, "p4"))
+  downloadable = node[:os] == "windows" ? "p4.exe" : "p4"
+  path_to_p4_executable = ::File.join(new_resource.directory, downloadable)
+  unless ::File.exists?(::File.join(@current_resource.directory, downloadable))
     p4_ftp.chdir("perforce/#{get_complete_p4_path}")
-    
-    downloadable = node[:os] == "windows" ? "p4.exe" : "p4"
 
-    p4_ftp.getbinaryfile(downloadable, ::File.join(new_resource.directory, downloadable))
+    p4_ftp.getbinaryfile(downloadable, path_to_p4_executable)
     p4_ftp.close
+
+    execute "set owner and group for #{path_to_p4_executable}" do
+      command "chown #{new_resource.owner}:#{new_resource.group} #{path_to_p4_executable}"
+    end
+
+    execute "set file permissions for #{path_to_p4_executable}" do
+      command "chmod #{new_resource.mode} #{path_to_p4_executable}"
+    end
   end
 end
 
