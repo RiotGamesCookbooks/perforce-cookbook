@@ -26,16 +26,34 @@ end
 
 private
 
+# Creates and returns the instance variable @ftp.
+# 
+# @return [Net::FTP] an FTP connection to Perforce
 def p4_ftp
   require 'net/ftp'
   return @ftp if @ftp
   @ftp = Net::FTP.new('ftp.perforce.com', 'anonymous')
 end
 
+
+# Returns a [String] representing the path
+# to a specific version of the p4 executable.
+# 
+# @return [String]
+# @example:
+#   "r12.1/bin.linux26x86_64"
 def get_complete_p4_path
   "r#{new_resource.version}/#{get_p4_os_directory}"
 end
 
+
+# Returns the operating-system specific directory
+# depending on the operating system of the node.
+# 
+# 
+# @return [String]
+# @example:
+#   "bin.darwin90x86"
 def get_p4_os_directory
   architecture = new_resource.sixty_four ? "x86_64" : "x86"
   case node[:os]
