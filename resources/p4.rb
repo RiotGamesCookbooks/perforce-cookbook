@@ -8,9 +8,9 @@
 #
 # All rights reserved - Do Not Redistribute
 #
-action :install
+actions :install
 default_action :install
 
-attribute :version, :kind_of => String, :required => true, :name_attribute => true
+attribute :version, :kind_of => String, :name_attribute => true
 attribute :directory, :kind_of => String, :required => true
 attribute :sixty_four, :kind_of => [TrueClass, FalseClass], :default => false, :required => true

@@ -14,11 +14,12 @@ def load_current_resource
 end
 
 action :install do
-  unless ::File.exists?("#{@current_resource.directory}/p4")
+  unless ::File.exists?(::File.join(@current_resource.directory, "p4"))
     p4_ftp.chdir("perforce/#{get_complete_p4_path}")
+    
     downloadable = node[:os] == "windows" ? "p4.exe" : "p4"
 
-    p4_ftp.getbinaryfile(downloadable, new_resource.directory)
+    p4_ftp.getbinaryfile(downloadable, ::File.join(new_resource.directory, downloadable))
     p4_ftp.close
   end
 end
@@ -28,9 +29,7 @@ private
 def p4_ftp
   require 'net/ftp'
   return @ftp if @ftp
-  @ftp = Net::FTP.new('ftp.perforce.com')
-  @ftp.login
-  @ftp
+  @ftp = Net::FTP.new('ftp.perforce.com', 'anonymous')
 end
 
 def get_complete_p4_path

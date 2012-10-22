@@ -8,3 +8,7 @@
 #
 # All rights reserved - Do Not Redistribute
 #
+perforce_p4 "12.1" do
+  directory "/var/tmp"
+  sixty_four true
+end
