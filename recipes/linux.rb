@@ -8,7 +8,11 @@
 #
 # All rights reserved - Do Not Redistribute
 #
+directory node[:p4][:install_dir] do
+  recursive true
+end
+
 perforce_p4 "12.1" do
-  directory "/var/tmp"
-  sixty_four true
+  directory node[:p4][:install_dir]
+  sixty_four node[:kernel][:machine] == "x86_64"
 end
