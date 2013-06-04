@@ -31,3 +31,13 @@ Usage
 Include the recipe and set the attributes above as node or environment attributes
 
     include_recipe 'perforce'
+
+LICENSE AND AUTHOR
+==================
+
+Author:: Josiah Kiehl (<jkiehl@riotgames.com>)
+Author:: Kyle Allan (<kallan@riotgames.com>)
+
+Copyright 2012-2013, Riot Games
+
+See LICENSE for license details
